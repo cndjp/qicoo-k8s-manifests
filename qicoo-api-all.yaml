@@ -1,0 +1,356 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: production
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo
+---
+apiVersion: v1
+data:
+  DB_URL: qicoo-mysql:3306
+  DB_USER: root
+  REDIS_URL: qicoo-redis:6379
+kind: ConfigMap
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo-api-configmap
+  namespace: production
+---
+apiVersion: v1
+data:
+  qicoo-mysql-init.sql: |
+    DROP DATABASE IF EXISTS qicoo;
+    CREATE DATABASE qicoo;
+    USE qicoo;
+
+    CREATE TABLE `questions` (
+      `id`         varchar(36) NOT NULL,
+      `object`     text,
+      `event_id`   text,
+      `program_id` text,
+      `username`   text,
+      `comment`    text,
+      `like_count` int(10) DEFAULT NULL,
+      `created_at` datetime DEFAULT NULL,
+      `updated_at` datetime DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `event_id` (`event_id`(40),`program_id`(40))
+    )
+  qicoo-mysql.cnf: |
+    [mysqld]
+    character-set-server=utf8mb4
+    collation-server=utf8mb4_unicode_ci
+kind: ConfigMap
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo-mysql-configmap
+  namespace: production
+---
+apiVersion: v1
+data:
+  MYSQL_ROOT_PASSWORD: bXktc2VjcmV0LXB3
+kind: Secret
+metadata:
+  annotations:
+    note: production
+  creationTimestamp: null
+  labels:
+    variant: production
+  name: qicoo-mysql-secret-2kg2hc7t24
+  namespace: production
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: api.qicoo.tokyo
+    note: production
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-west-2:297295734308:certificate/8a2b8c2c-7753-4ce0-8215-32ffb7711c58
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+  labels:
+    app: qicoo-api
+    variant: production
+  name: qicoo-api
+  namespace: production
+spec:
+  ports:
+  - name: http
+    port: 443
+    targetPort: 8080
+  selector:
+    app: qicoo-api
+    variant: production
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    note: production
+  labels:
+    app: qicoo-mysql
+    variant: production
+  name: qicoo-mysql
+  namespace: production
+spec:
+  clusterIP: None
+  ports:
+  - port: 3306
+  selector:
+    app: qicoo-mysql
+    variant: production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    note: production
+  labels:
+    app: qicoo-redis
+    variant: production
+  name: qicoo-redis
+  namespace: production
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: qicoo-redis
+    variant: production
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo-api
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qicoo-api
+      variant: production
+  template:
+    metadata:
+      annotations:
+        note: production
+      labels:
+        app: qicoo-api
+        variant: production
+    spec:
+      containers:
+      - env:
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              key: DB_URL
+              name: qicoo-api-configmap
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DB_USER
+              name: qicoo-api-configmap
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: qicoo-mysql-secret-2kg2hc7t24
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_URL
+              name: qicoo-api-configmap
+        image: cndjp/qicoo-api:v0.0.6
+        imagePullPolicy: Always
+        name: qicoo-api
+        ports:
+        - containerPort: 8080
+          name: http
+      initContainers:
+      - args:
+        - until mysqladmin ping -hqicoo-mysql -uroot -p$DB_PASSWORD; do echo waiting
+          for mysqldb; sleep 2; done;
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: qicoo-mysql-secret-2kg2hc7t24
+        image: mysql:5.6.27
+        name: wait-for-qicoo-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo-redis
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qicoo-redis
+      variant: production
+  template:
+    metadata:
+      annotations:
+        note: production
+      labels:
+        app: qicoo-redis
+        variant: production
+    spec:
+      containers:
+      - image: redis:4.0.10
+        name: qicoo-redis
+        ports:
+        - containerPort: 6379
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo-mysql
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qicoo-mysql
+      variant: production
+  serviceName: qicoo-mysql
+  template:
+    metadata:
+      annotations:
+        note: production
+      labels:
+        app: qicoo-mysql
+        variant: production
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: qicoo-mysql-secret-2kg2hc7t24
+        image: mysql:5.6.27
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        name: qicoo-mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: /etc/mysql/conf.d
+          name: conf
+      initContainers:
+      - args:
+        - cp /mnt/configmap/qicoo-mysql.cnf /mnt/conf.d/
+        command:
+        - /bin/sh
+        - -c
+        image: busybox:1
+        name: configure-mysql
+        volumeMounts:
+        - mountPath: /mnt/conf.d
+          name: conf
+        - mountPath: /mnt/configmap
+          name: qicoo-mysql-configmap
+      volumes:
+      - emptyDir: {}
+        name: conf
+      - configMap:
+          name: qicoo-mysql-configmap
+        name: qicoo-mysql-configmap
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    note: production
+  labels:
+    variant: production
+  name: qicoo-mysqldb-init
+  namespace: production
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      annotations:
+        note: production
+      labels:
+        variant: production
+    spec:
+      containers:
+      - args:
+        - mysql -hqicoo-mysql -uroot -p$DB_PASSWORD < /mnt/configmap/qicoo-mysql-init.sql;
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: qicoo-mysql-secret-2kg2hc7t24
+        image: mysql:5.6.27
+        name: qicoo-mysql-init
+        volumeMounts:
+        - mountPath: /mnt/configmap
+          name: qicoo-mysql-configmap
+      initContainers:
+      - args:
+        - until mysqladmin ping -hqicoo-mysql -uroot -p$DB_PASSWORD; do echo waiting
+          for mysqldb; sleep 2; done;
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: qicoo-mysql-secret-2kg2hc7t24
+        image: mysql:5.6.27
+        name: wait-for-qicoo-mysql
+      restartPolicy: Never
+      volumes:
+      - configMap:
+          name: qicoo-mysql-configmap
+        name: qicoo-mysql-configmap
