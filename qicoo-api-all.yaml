@@ -70,7 +70,6 @@ kind: Secret
 metadata:
   annotations:
     note: production
-  creationTimestamp: null
   labels:
     variant: production
   name: qicoo-mysql-secret-2kg2hc7t24
@@ -181,7 +180,7 @@ spec:
             configMapKeyRef:
               key: REDIS_URL
               name: qicoo-api-configmap
-        image: cndjp/qicoo-api:v0.0.6
+        image: cndjp/qicoo-api:v0.0.4
         imagePullPolicy: Always
         name: qicoo-api
         ports:
@@ -298,6 +297,10 @@ spec:
       - configMap:
           name: qicoo-mysql-configmap
         name: qicoo-mysql-configmap
+  volumeClaimTemplates:
+    metadata:
+      labels:
+        variant: production
 ---
 apiVersion: batch/v1
 kind: Job
