@@ -180,7 +180,7 @@ spec:
             configMapKeyRef:
               key: REDIS_URL
               name: qicoo-api-configmap
-        image: cndjp/qicoo-api:v0.0.4
+        image: cndjp/qicoo-api:v0.0.
         imagePullPolicy: Always
         name: qicoo-api
         ports:
