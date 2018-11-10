@@ -16,7 +16,7 @@ spec:
         app: qicoo-api-production
     spec:
       containers:
-      - image: cndjp/qicoo-api:canary_0.0.7
+      - image: cndjp/qicoo-api:canarytest_0.0.7
         name: qicoo-api-production
         ports:
         - containerPort: 8080
