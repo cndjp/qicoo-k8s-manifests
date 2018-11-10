@@ -4,7 +4,7 @@ metadata:
   name: qicoo-api-production-canary
   namespace: production
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
