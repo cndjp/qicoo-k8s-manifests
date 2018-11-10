@@ -23,7 +23,7 @@ metadata:
   name: qicoo-api-production
   namespace: production
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
