@@ -1,29 +1,10 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: qicoo-api-production
-  namespace: production
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: api.qicoo.tokyo
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-west-2:297295734308:certificate/8a2b8c2c-7753-4ce0-8215-32ffb7711c58
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 443
-    name: http
-    targetPort: 8080
-  selector:
-    app: qicoo-api-production
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: qicoo-api-production
+  name: qicoo-api-production-canary
   namespace: production
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -35,7 +16,7 @@ spec:
         app: qicoo-api-production
     spec:
       containers:
-      - image: cndjp/qicoo-api:sugitest_0.0.7
+      - image: cndjp/qicoo-api
         name: qicoo-api-production
         ports:
         - containerPort: 8080
