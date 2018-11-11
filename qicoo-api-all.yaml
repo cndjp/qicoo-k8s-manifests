@@ -23,7 +23,7 @@ metadata:
   name: qicoo-api-production
   namespace: production
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -35,7 +35,7 @@ spec:
         app: qicoo-api-production
     spec:
       containers:
-      - image: cndjp/qicoo-api:sugitest_0.0.7
+      - image: cndjp/qicoo-api:canarytest_0.0.8
         name: qicoo-api-production
         ports:
         - containerPort: 8080
