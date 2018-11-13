@@ -1,10 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    dummuy: 'For telling spinnaker that this file is needed for cannary analytics:
+      v0.0.1-20181111-0000'
   name: base-qicoo-api
   namespace: production
-  annotations:
-      test: testsugi1
 spec:
   replicas: 1
   selector:
