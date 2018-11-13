@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: qicoo-api-production-canary
+  name: canary-qicoo-api
   namespace: production
 spec:
-  replicas: 2
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qicoo-api
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -13,44 +16,44 @@ spec:
   template:
     metadata:
       labels:
-        app: qicoo-api-production
+        app: qicoo-api
     spec:
       containers:
-      - image: cndjp/qicoo-api:canarytest_0.0.8
-        name: qicoo-api-production
+      - envFrom:
+        - secretRef:
+            name: qicoo-api-secret-production
+        image: cndjp/qicoo-api:canarytest_0.0.8
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /readiness
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: qicoo-api
         ports:
         - containerPort: 8080
           name: http
-        livenessProbe:
-          httpGet:
-            scheme: HTTP
-            path: /readiness
-            port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 30
-          timeoutSeconds: 1
-          successThreshold: 1
-          failureThreshold: 2
         readinessProbe:
+          failureThreshold: 2
           httpGet:
-            scheme: HTTP
             path: /readiness
             port: 8080
+            scheme: HTTP
           initialDelaySeconds: 20
           periodSeconds: 30
-          timeoutSeconds: 1
           successThreshold: 2
-          failureThreshold: 2
+          timeoutSeconds: 1
         resources:
-          requests:
-            memory: 1024Mi
-            cpu: 200m
           limits:
-            memory: 1024Mi
             cpu: 200m
-        envFrom:
-        - secretRef:
-            name: qicoo-api-secret-production
+            memory: 1024Mi
+          requests:
+            cpu: 200m
+            memory: 1024Mi
         securityContext:
           privileged: false
           readOnlyRootFilesystem: true
