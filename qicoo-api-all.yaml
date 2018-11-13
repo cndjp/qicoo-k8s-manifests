@@ -43,7 +43,7 @@ spec:
       - envFrom:
         - secretRef:
             name: qicoo-api-secret-production
-        image: cndjp/qicoo-api:sugitest_0.0.8
+        image: cndjp/qicoo-api:canarytest_0.0.8
         livenessProbe:
           failureThreshold: 2
           httpGet:
