@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: canary-qicoo-api
   namespace: production
-  annotations:
-      test: testsugi1
 spec:
   replicas: 1
   selector:
@@ -24,7 +22,7 @@ spec:
       - envFrom:
         - secretRef:
             name: qicoo-api-secret-production
-        image: cndjp/qicoo-api:canarytest_0.0.8
+        image: cndjp/qicoo-api:v0.0.1-20181111-0000
         livenessProbe:
           failureThreshold: 2
           httpGet:
