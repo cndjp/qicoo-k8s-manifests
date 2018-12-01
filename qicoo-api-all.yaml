@@ -25,7 +25,7 @@ metadata:
   name: qicoo-api
   namespace: production
 spec:
-  replicas: 2
+  replicas: 6
   selector:
     matchLabels:
       app: qicoo-api
@@ -43,7 +43,7 @@ spec:
       - envFrom:
         - secretRef:
             name: qicoo-api-secret-production
-        image: cndjp/qicoo-api:v0.0.1-20181201-0553
+        image: cndjp/qicoo-api:v0.0.1-20181201-0844
         livenessProbe:
           failureThreshold: 2
           httpGet:
