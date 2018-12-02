@@ -43,7 +43,9 @@ spec:
       - envFrom:
         - secretRef:
             name: qicoo-api-secret-production
-        image: cndjp/qicoo-api:v0.0.1-20181201-0844
+        - configMapRef:
+            name: qicoo-api-configmap-production
+        image: cndjp/qicoo-api:v0.0.1-20181202-0134
         livenessProbe:
           failureThreshold: 2
           httpGet:
