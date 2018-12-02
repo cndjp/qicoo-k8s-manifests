@@ -32,7 +32,7 @@ spec:
           initialDelaySeconds: 20
           periodSeconds: 30
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 30
         name: qicoo-api
         ports:
         - containerPort: 8080
@@ -46,7 +46,7 @@ spec:
           initialDelaySeconds: 20
           periodSeconds: 30
           successThreshold: 2
-          timeoutSeconds: 1
+          timeoutSeconds: 30
         resources:
           limits:
             cpu: 200m
