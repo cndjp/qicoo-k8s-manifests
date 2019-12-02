@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qicoo-front
+  namespace: qicoo
+spec:
+  ports:
+    - name: http
+      port: 37000
+      nodePort: 30080
+      targetPort: 8080
+  selector:
+    app: qicoo-front
+  type: NodePort

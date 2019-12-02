@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qicoo-api
+  namespace: qicoo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: qicoo-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: qicoo-api
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: qicoo-api-config
+          image: cndjp/qicoo-api-kt:8d4a887657ae37eb3d8405fccc91a9ddb8f48863
+          livenessProbe:
+            failureThreshold: 2
+            httpGet:
+              path: /hc
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            failureThreshold: 2
+            httpGet:
+              path: /api/v1/questions
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 30
+          name: qicoo-api
+          ports:
+            - containerPort: 8081
+              name: http
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 102Mi
+          securityContext:
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsUser: 12345

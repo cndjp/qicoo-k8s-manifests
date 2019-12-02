@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qicoo-front
+  namespace: qicoo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: qicoo-front
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 3
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: qicoo-front
+    spec:
+      containers:
+        - image: cndjp/qicoo-front:20191126212514-7b844e8c0dd6140e0887bc9624b3906d1043158f
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /hc
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: qicoo-front
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 102Mi
