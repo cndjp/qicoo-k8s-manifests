@@ -15,7 +15,6 @@ steps:
       - "-c"
       - |
         gcloud config set account 947168602425@cloudbuild.gserviceaccount.com
-        gcloud auth login
   - id: "gcloud kms keys"
     name: "google/cloud-sdk:272.0.0-slim"
     entrypoint: "sh"
