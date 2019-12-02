@@ -29,7 +29,7 @@ steps:
       - "-c"
       - |
         gcloud auth login
-  - id: "gcloud login"
+  - id: "gcloud kms keys"
     name: "google/cloud-sdk:272.0.0-slim"
     entrypoint: "sh"
     args:
