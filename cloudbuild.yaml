@@ -22,3 +22,17 @@ steps:
         echo "***********************"
         echo "$BRANCH_NAME"
         echo "***********************"
+  - id: "gcloud login"
+    name: "google/cloud-sdk:272.0.0-slim"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        gcloud auth login
+  - id: "gcloud login"
+    name: "google/cloud-sdk:272.0.0-slim"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        gcloud kms keys list --location global --keyring test
