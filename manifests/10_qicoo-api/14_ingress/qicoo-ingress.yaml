@@ -1,0 +1,28 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: qicoo-tls-cert
+spec:
+  domains:
+    - qicoo.tokyo
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: qicoo-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "35.190.48.214"
+    kubernetes.io/ingress.allow-http: "false"
+    networking.gke.io/managed-certificates: qicoo-tls-cert
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/v1/*
+        backend:
+          serviceName: qicoo-api
+          servicePort: 37000
+      - path: /*
+        backend:
+          serviceName: qicoo-front
+          servicePort: 37000
