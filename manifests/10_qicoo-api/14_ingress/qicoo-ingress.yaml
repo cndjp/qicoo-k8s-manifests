@@ -11,9 +11,9 @@ kind: Ingress
 metadata:
   name: qicoo-ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: "34.96.125.232"
+    kubernetes.io/ingress.global-static-ip-name: "35.190.48.214"
     kubernetes.io/ingress.allow-http: "false"
-    networking.gke.io/managed-certificates: qicoo.tokyo
+    networking.gke.io/managed-certificates: "qicoo-tls-cert"
 spec:
   rules:
   - http:
