@@ -15,8 +15,6 @@ metadata:
     kubernetes.io/ingress.allow-http: "false"
     networking.gke.io/managed-certificates: qicoo.tokyo
 spec:
-  tls:
-  - secretName: qicoo-secret-tls
   rules:
   - http:
       paths:
