@@ -15,7 +15,7 @@ steps:
       - "-c"
       - |
         gcloud version
-        kubectl version
+        kubectl --client version
   - id: "deploy manifest"
     name: "google/cloud-sdk:272.0.0"
     entrypoint: "sh"
