@@ -32,7 +32,7 @@ spec:
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  key: MYSQL_PASSWORD
+                  key: MYSQL_USER
                   name: qicoo-secret
             - name: MYSQL_PORT
               valueFrom:
