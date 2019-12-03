@@ -13,7 +13,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "35.190.48.214"
     kubernetes.io/ingress.allow-http: "false"
-    networking.gke.io/managed-certificates: "qicoo-tls-cert"
+    networking.gke.io/managed-certificates: qicoo-tls-cert
 spec:
   rules:
   - http:
