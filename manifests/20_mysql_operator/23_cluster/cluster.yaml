@@ -5,7 +5,7 @@ metadata:
   namespace: qicoo
 spec:
   members: 3
-  multiMaster: true
+  multiMaster: false
   config:
     name: mysql-config
   rootPasswordSecret:
