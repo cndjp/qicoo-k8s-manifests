@@ -40,7 +40,7 @@ spec:
                   key: MYSQL_PORT
                   name: qicoo-api-config
             - name: MYSQL_HOST
-              value: mysql-qicoo2db-0.mysql-cluster.svc.cluster.local
+              value: mysql-qicoo2db.mysql-cluster.svc.cluster.local
             - name: MYSQL_INNODB_NUM_MEMBERS
               value: "3"
           image: mysql/mysql-router:8.0.12
