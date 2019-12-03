@@ -2,7 +2,7 @@ apiVersion: mysql.oracle.com/v1alpha1
 kind: Cluster
 metadata:
   name: mysql-qicoo2db
-  namespace: mysql-cluster
+  namespace: qicoo
 spec:
   members: 3
   multiMaster: true
