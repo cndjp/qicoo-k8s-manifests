@@ -8,14 +8,6 @@ steps:
         echo "***********************"
         echo "$BRANCH_NAME"
         echo "***********************"
-  - id: "check software"
-    name: "google/cloud-sdk:272.0.0"
-    entrypoint: "sh"
-    args:
-      - "-c"
-      - |
-        gcloud version
-        kubectl --client version
   - id: "deploy manifest"
     name: "google/cloud-sdk:272.0.0"
     entrypoint: "sh"
