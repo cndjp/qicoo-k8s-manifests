@@ -30,9 +30,15 @@ spec:
                   key: MYSQL_PASSWORD
                   name: qicoo-secret
             - name: MYSQL_USER
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: qicoo-secret
             - name: MYSQL_PORT
-              value: "3306"
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_PORT
+                  name: qicoo-api-config
             - name: MYSQL_HOST
               value: mysql-qicoo2db-0.mysql-db
             - name: MYSQL_INNODB_NUM_MEMBERS
