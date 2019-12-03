@@ -34,4 +34,5 @@ steps:
           --plaintext-file manifests/20_mysql_operator/21_operator/mysql-secret.yaml \
           --ciphertext-file secrets/mysql-secret.yaml.enc
 
-        kubectl apply --dry-run -f manifests -R && kubectl apply -f manifests -R
+        # kubectl apply --dry-run -f manifests -R && kubectl apply -f manifests -R
+        kubectl apply -f manifests -R
