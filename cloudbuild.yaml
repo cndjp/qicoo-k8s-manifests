@@ -16,7 +16,7 @@ steps:
       - |
         gcloud container clusters get-credentials \
           qicoo-k8s-cluster-001 \
-          --region ap-northeast-1
+          --region asia-northeast1
 
         kubectl get node
 
