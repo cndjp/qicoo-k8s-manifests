@@ -17,14 +17,13 @@ metadata:
     kubernetes.io/ingress.allow-http: "false"
     networking.gke.io/managed-certificates: qicoo-tls-cert
 spec:
+  backend:
+    serviceName: qicoo-front
+    servicePort: 37000
   rules:
   - http:
       paths:
       - path: /api/v1/*
         backend:
           serviceName: qicoo-api
-          servicePort: 37000
-      - path: /*
-        backend:
-          serviceName: qicoo-front
           servicePort: 37000
