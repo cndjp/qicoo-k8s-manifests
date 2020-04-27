@@ -18,9 +18,13 @@ spec:
     spec:
       serviceAccountName: redisoperator
       containers:
-        - image: quay.io/spotahome/redis-operator:latest
+        - image: quay.io/spotahome/redis-operator:v1.0.0
           imagePullPolicy: IfNotPresent
           name: app
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
           resources:
             limits:
               cpu: 100m
@@ -41,7 +45,8 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: redisoperator
-    namespace: redis-cluster
+    # namespace: redis-cluster
+    namespace: default
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
