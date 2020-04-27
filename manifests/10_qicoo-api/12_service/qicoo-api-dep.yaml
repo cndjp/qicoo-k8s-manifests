@@ -49,6 +49,30 @@ spec:
             requests:
               cpu: 100m
               memory: 102Mi
+        - command:
+            - "/bin/bash"
+            - "-cx"
+            - "echo CREATE DATABASE IF NOT EXISTS qicoo2db | mysql -u${MYSQL_USER} -h127.0.0.1 -P6446 -p${MYSQL_PASSWORD}"
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: qicoo-secret
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_USER
+                  name: qicoo-secret
+          image: mysql/mysql-router:8.0.12
+          name: check-db
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 102Mi
         - envFrom:
             - configMapRef:
                 name: qicoo-api-config
