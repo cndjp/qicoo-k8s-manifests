@@ -52,7 +52,7 @@ spec:
         - command:
             - "/bin/bash"
             - "-cx"
-            - "echo CREATE DATABASE IF NOT EXISTS qicoo2db | mysql -u${MYSQL_USER} -h127.0.0.1 -P6446 -p${MYSQL_PASSWORD}; exit 0"
+            - "echo CREATE DATABASE IF NOT EXISTS qicoo2db | mysql -u${MYSQL_USER} -h127.0.0.1 -P6446 -p${MYSQL_PASSWORD}; tail /dev/null"
           env:
             - name: MYSQL_PASSWORD
               valueFrom:
