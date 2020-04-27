@@ -16,19 +16,19 @@ steps:
       - |
         gcloud container clusters get-credentials \
           qicoo-k8s-cluster-001 \
-          --region asia-northeast1
+          --region asia-northeast1-a
 
         kubectl get node
 
         gcloud kms decrypt \
-          --location asia-northeast1 \
+          --location asia-northeast1-a \
           --keyring qicoo-kms-02 \
           --key qicoo-kms-02-key \
           --plaintext-file manifests/10_qicoo-api/11_config/qicoo-secret.yaml \
           --ciphertext-file secrets/qicoo-secret.yaml.enc
 
         gcloud kms decrypt \
-          --location asia-northeast1 \
+          --location asia-northeast1-a \
           --keyring qicoo-kms-02 \
           --key qicoo-kms-02-key \
           --plaintext-file manifests/20_mysql_operator/21_operator/mysql-secret.yaml \
