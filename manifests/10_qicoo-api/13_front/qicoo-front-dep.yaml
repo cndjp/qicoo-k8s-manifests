@@ -19,7 +19,7 @@ spec:
         app: qicoo-front
     spec:
       containers:
-        - image: cndjp/qicoo-front:dev
+        - image: cndjp/qicoo-front:c343977b3d9ea8d61630fb79376ba3a8a101130d
           livenessProbe:
             failureThreshold: 3
             httpGet:
