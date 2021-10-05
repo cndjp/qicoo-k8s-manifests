@@ -212,7 +212,7 @@ spec:
     plural: mysqlbackupschedules
 ---
 # Source: mysql-operator/templates/03-deployment.yaml
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-operator
