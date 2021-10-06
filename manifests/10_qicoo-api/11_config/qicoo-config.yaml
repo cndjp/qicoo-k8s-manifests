@@ -4,7 +4,7 @@ metadata:
   name: qicoo-api-config
   namespace: qicoo
 data:
-  MYSQL_HOST: "127.0.0.1"
+  MYSQL_HOST: "mysql-qicoo2db"
   MYSQL_PORT: "6446"
   MYSQL_OPTS: "useSSL=false&prefer_socket=false&timeout=30s&parseTime=true&loc=Asia%2FTokyo"
   # REDIS_HOST: "rfs-redisfailover.redis-cluster.svc.cluster.local"
