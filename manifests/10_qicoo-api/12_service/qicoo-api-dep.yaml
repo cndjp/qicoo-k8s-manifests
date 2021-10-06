@@ -18,54 +18,34 @@ spec:
       labels:
         app: qicoo-api
     spec:
-      containers:
-        - command:
+      initContainers: 
+        - name: init-db
+          image: mysql/mysql-router:8.0.25
+          command:
             - "/bin/bash"
             - "-cx"
-            - "exec /run.sh mysqlrouter"
+            - "echo CREATE DATABASE IF NOT EXISTS qicoo2db | mysql -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USER} -p${MYSQL_PASSWORD}"
           env:
-            - name: MYSQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: MYSQL_PASSWORD
-                  name: qicoo-secret
-            - name: MYSQL_USER
-              valueFrom:
-                secretKeyRef:
-                  key: MYSQL_USER
-                  name: qicoo-secret
-            - name: MYSQL_PORT
-              value: "3306"
             - name: MYSQL_HOST
-              value: mysql-qicoo2db-0.mysql-qicoo2db
-            - name: MYSQL_INNODB_NUM_MEMBERS
-              value: "3"
-          image: mysql/mysql-router:8.0.12
-          name: mysqlrouter
-          resources:
-            limits:
-              cpu: 500m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 102Mi
-        - command:
-            - "/bin/bash"
-            - "-cx"
-            - "echo CREATE DATABASE IF NOT EXISTS qicoo2db | mysql -u${MYSQL_USER} -h127.0.0.1 -P6446 -p${MYSQL_PASSWORD}; tail -f /dev/null"
-          env:
-            - name: MYSQL_PASSWORD
               valueFrom:
-                secretKeyRef:
-                  key: MYSQL_PASSWORD
-                  name: qicoo-secret
+                configMapKeyRef:
+                  key: MYSQL_HOST
+                  name: qicoo-api-config
+            - name: MYSQL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_PORT
+                  name: qicoo-api-config
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
                   key: MYSQL_USER
                   name: qicoo-secret
-          image: mysql/mysql-router:8.0.12
-          name: check-db
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: qicoo-secret
           resources:
             limits:
               cpu: 500m
@@ -73,12 +53,14 @@ spec:
             requests:
               cpu: 100m
               memory: 102Mi
-        - envFrom:
+      containers:
+        - name: qicoo-api
+          image: cndjp/qicoo-api-kt:8d77fe524b5983a04eb13ec51b6a17c2684be030
+          envFrom:
             - configMapRef:
                 name: qicoo-api-config
             - secretRef:
                 name: qicoo-secret
-          image: cndjp/qicoo-api-kt:8d77fe524b5983a04eb13ec51b6a17c2684be030
           livenessProbe:
             failureThreshold: 2
             httpGet:
@@ -99,7 +81,6 @@ spec:
             periodSeconds: 30
             successThreshold: 1
             timeoutSeconds: 30
-          name: qicoo-api
           ports:
             - containerPort: 8081
               name: http

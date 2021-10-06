@@ -1,12 +1,12 @@
-apiVersion: mysql.oracle.com/v1alpha1
-kind: Cluster
+apiVersion: mysql.oracle.com/v2alpha1
+kind: InnoDBCluster
 metadata:
   name: mysql-qicoo2db
   namespace: qicoo
 spec:
-  members: 3
-  multiMaster: false
-  config:
-    name: mysql-config
-  rootPasswordSecret:
-    name: mysql-root-password-secret
+  secretName: mysql-root-password-secret
+  instances: 3
+  version: 8.0.25
+  router:
+    instances: 1
+    version: 8.0.25
