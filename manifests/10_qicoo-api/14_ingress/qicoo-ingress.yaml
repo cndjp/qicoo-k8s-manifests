@@ -13,8 +13,8 @@ metadata:
   name: qicoo-ingress
   namespace: qicoo
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: "35.190.48.214"
     kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.global-static-ip-name: "qicoo-tokyo"
     networking.gke.io/managed-certificates: qicoo-tls-cert
 spec:
   backend:
